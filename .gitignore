@@ -1,0 +1,32 @@
+# Keep the existing local Python environment and generated files private/local.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build scripts recreate these; preserve local outputs without committing them.
+build/
+*.obj
+*.pdb
+*.ilk
+
+# Camera captures and labeled data may contain private images.
+data/inspections/*
+!data/inspections/.gitkeep
+data/labeled/
+*.log
+
+# Local credentials and editor/OS state.
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
