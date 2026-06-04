@@ -1,0 +1,69 @@
+# FruitGuard Vision - uncalibrated starting thresholds; requires calibration.
+detector:
+  model_path: yolo11n.pt
+  device: cuda:0
+  input_size: 640
+  detection_threshold: 0.35
+  apple_class_name: apple
+  apple_class_id: null
+camera:
+  index: 0
+  width: 640
+  height: 480
+serial:
+  port: COM5
+  baudrate: 9600
+  startup_delay_s: 2.0
+  retry_interval_s: 3.0
+  write_timeout_s: 0.1
+  max_read_bytes: 4096
+  max_line_bytes: 128
+  min_distance_cm: 0.1
+  max_distance_cm: 400.0
+  enter_cm: 40.0
+  exit_cm: 45.0
+  reading_timeout_s: 1.5
+quality:
+  min_roi_size: 32
+  min_foreground_pixels: 300
+  min_foreground_fraction: 0.2
+  max_foreground_fraction: 0.94
+  background_corner_fraction: 0.12
+  background_max_variation: 18.0
+  background_variation_percentile: 85.0
+  frame_border_margin_pixels: 2
+  foreground_lab_distance: 22.0
+  min_component_dominance: 0.85
+  min_background_separation: 24.0
+  max_boundary_fraction: 0.18
+  min_contour_solidity: 0.85
+  max_contour_aspect_ratio: 1.9
+  dark_value_max: 60
+  brown_hue_min: 8
+  brown_hue_max: 25
+  brown_saturation_min: 35
+  brown_saturation_max: 220
+  brown_value_min: 60
+  brown_value_max: 170
+  desaturated_saturation_max: 25
+  desaturated_value_min: 60
+  desaturated_value_max: 170
+  dark_weight: 0.45
+  color_weight: 0.3
+  symmetry_weight: 0.25
+  good_detection_confidence: 0.6
+  max_clipped_fraction: 0.08
+  good_dark_percentage: 3.0
+  strong_dark_percentage: 12.0
+  good_color_anomaly: 0.06
+  strong_color_anomaly: 0.25
+  good_symmetry: 0.85
+  strong_symmetry: 0.65
+  good_defect_score: 0.1
+  strong_defect_score: 0.25
+storage:
+  directory: data/inspections
+classifier:
+  backend: cpu
+  device_index: 0
+  library_path: build/fruitguard_preprocess.dll
