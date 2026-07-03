@@ -1,390 +1,113 @@
-#include <cuda_runtime.h>
+#include "ImagePreprocess.cuh"
+#include <cstdio>
+#include <limits>
+#include <new>
 
-#include <chrono>
-#include <cstdlib>
-#include <iostream>
-#include <vector>
-
-#define CUDA_CHECK(call)                                                   \
-do                                                                         \
-{                                                                          \
-    cudaError_t error = call;                                              \
-    if (error != cudaSuccess)                                              \
-    {                                                                      \
-        std::cerr << "CUDA error at "                                      \
-                  << __FILE__ << ":" << __LINE__ << "\n"                   \
-                  << "Name: " << cudaGetErrorName(error) << "\n"           \
-                  << "Message: " << cudaGetErrorString(error) << "\n";      \
-        std::exit(EXIT_FAILURE);                                           \
-    }                                                                      \
-} while (0)
-
-
-// ----------------------------------------------------------
-// GPU kernel
-//
-// Input:
-//   BGR uint8 layout:
-//   B G R | B G R | B G R ...
-//
-// Output:
-//   RGB float layout:
-//   R G B | R G B | R G B ...
-//
-// Values are normalized to [0, 1]
-// ----------------------------------------------------------
-
-__global__ void bgrToRgbNormalize(
-    const unsigned char* input,
-    float* output,
-    int pixelCount)
-{
-    int pixelIndex =
-        blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (pixelIndex >= pixelCount)
-        return;
-
-    int base = pixelIndex * 3;
-
-    unsigned char B = input[base + 0];
-    unsigned char G = input[base + 1];
-    unsigned char R = input[base + 2];
-
-    output[base + 0] = R / 255.0f;
-    output[base + 1] = G / 255.0f;
-    output[base + 2] = B / 255.0f;
+namespace {
+__global__ void bgrToRgbChw(const unsigned char* input, float* output, size_t pixels) {
+    const size_t p = static_cast<size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+    if (p >= pixels) return;
+    output[p] = input[3 * p + 2] / 255.0f;
+    output[pixels + p] = input[3 * p + 1] / 255.0f;
+    output[2 * pixels + p] = input[3 * p] / 255.0f;
+}
+struct Context {
+    int device;
+    unsigned char* input = nullptr;
+    float* output = nullptr;
+    size_t capacity = 0;
+};
+int report(cudaError_t code, const char* operation, char* error, size_t capacity) {
+    if (error && capacity) {
+        if (code == cudaSuccess) error[0] = '\0';
+        else std::snprintf(error, capacity, "%s: %s (%s)", operation,
+                           cudaGetErrorName(code), cudaGetErrorString(code));
+    }
+    // The returned diagnostic consumes this call's error. Otherwise a handled
+    // invalid-device request can incorrectly poison a later valid kernel launch.
+    if (code != cudaSuccess) (void)cudaGetLastError();
+    return static_cast<int>(code);
+}
 }
 
-
-// ----------------------------------------------------------
-// CPU reference implementation
-// ----------------------------------------------------------
-
-void cpuPreprocess(
-    const unsigned char* input,
-    float* output,
-    int pixelCount)
-{
-    for (int i = 0; i < pixelCount; ++i)
-    {
-        int base = i * 3;
-
-        unsigned char B = input[base + 0];
-        unsigned char G = input[base + 1];
-        unsigned char R = input[base + 2];
-
-        output[base + 0] = R / 255.0f;
-        output[base + 1] = G / 255.0f;
-        output[base + 2] = B / 255.0f;
+void cpuPreprocessBgrToRgbChw(const unsigned char* input, float* output, size_t pixels) {
+    for (size_t p = 0; p < pixels; ++p) {
+        output[p] = input[3 * p + 2] / 255.0f;
+        output[pixels + p] = input[3 * p + 1] / 255.0f;
+        output[2 * pixels + p] = input[3 * p] / 255.0f;
     }
 }
 
+cudaError_t launchBgrToRgbChw(const unsigned char* input, float* output,
+                             size_t pixels, cudaStream_t stream) {
+    if (!input || !output || !pixels || pixels > static_cast<size_t>(2147483647))
+        return cudaErrorInvalidValue;
+    const int threads = 256;
+    const unsigned int blocks = static_cast<unsigned int>((pixels + threads - 1) / threads);
+    bgrToRgbChw<<<blocks, threads, 0, stream>>>(input, output, pixels);
+    return cudaGetLastError();
+}
 
-// ----------------------------------------------------------
-// Main
-// ----------------------------------------------------------
-
-int main()
-{
-    // Let's simulate a 640x640 OpenCV frame
-    const int width = 640;
-    const int height = 640;
-    const int channels = 3;
-
-    const int pixelCount = width * height;
-    const int elementCount = pixelCount * channels;
-
-    const size_t inputBytes =
-        elementCount * sizeof(unsigned char);
-
-    const size_t outputBytes =
-        elementCount * sizeof(float);
-
-
-    std::cout << "Image size: "
-              << width << " x "
-              << height << "\n";
-
-    std::cout << "Pixels: "
-              << pixelCount << "\n\n";
-
-
-    // ------------------------------------------------------
-    // Create fake BGR image
-    // ------------------------------------------------------
-
-    std::vector<unsigned char> hostInput(
-        elementCount
-    );
-
-    // Fill with deterministic test data
-    for (int i = 0; i < elementCount; ++i)
-    {
-        hostInput[i] =
-            static_cast<unsigned char>(i % 256);
+extern "C" FG_EXPORT void* fg_create(int device, char* error, size_t error_capacity) {
+    cudaError_t code = cudaSetDevice(device);
+    if (code != cudaSuccess) {
+        report(code, "cudaSetDevice", error, error_capacity);
+        return nullptr;
     }
+    Context* context = new (std::nothrow) Context;
+    if (!context) {
+        report(cudaErrorMemoryAllocation, "allocate context", error, error_capacity);
+        return nullptr;
+    }
+    context->device = device;
+    report(cudaSuccess, "create", error, error_capacity);
+    return context;
+}
 
-
-    std::vector<float> cpuOutput(
-        elementCount
-    );
-
-    std::vector<float> gpuOutput(
-        elementCount
-    );
-
-
-    // ------------------------------------------------------
-    // CPU preprocessing benchmark
-    // ------------------------------------------------------
-
-    auto cpuStart =
-        std::chrono::high_resolution_clock::now();
-
-    cpuPreprocess(
-        hostInput.data(),
-        cpuOutput.data(),
-        pixelCount
-    );
-
-    auto cpuEnd =
-        std::chrono::high_resolution_clock::now();
-
-
-    std::chrono::duration<double, std::milli>
-        cpuDuration = cpuEnd - cpuStart;
-
-
-    std::cout
-        << "CPU preprocessing: "
-        << cpuDuration.count()
-        << " ms\n";
-
-
-    // ------------------------------------------------------
-    // Allocate GPU memory
-    // ------------------------------------------------------
-
-    unsigned char* deviceInput = nullptr;
-    float* deviceOutput = nullptr;
-
-
-    CUDA_CHECK(
-        cudaMalloc(
-            reinterpret_cast<void**>(&deviceInput),
-            inputBytes
-        )
-    );
-
-
-    CUDA_CHECK(
-        cudaMalloc(
-            reinterpret_cast<void**>(&deviceOutput),
-            outputBytes
-        )
-    );
-
-
-    // ------------------------------------------------------
-    // Copy image CPU -> GPU
-    // ------------------------------------------------------
-
-    CUDA_CHECK(
-        cudaMemcpy(
-            deviceInput,
-            hostInput.data(),
-            inputBytes,
-            cudaMemcpyHostToDevice
-        )
-    );
-
-
-    // ------------------------------------------------------
-    // CUDA timing events
-    // ------------------------------------------------------
-
-    cudaEvent_t startEvent;
-    cudaEvent_t stopEvent;
-
-    CUDA_CHECK(
-        cudaEventCreate(&startEvent)
-    );
-
-    CUDA_CHECK(
-        cudaEventCreate(&stopEvent)
-    );
-
-
-    const int threadsPerBlock = 256;
-
-    const int blocks =
-        (pixelCount + threadsPerBlock - 1)
-        / threadsPerBlock;
-
-
-    CUDA_CHECK(
-        cudaEventRecord(startEvent)
-    );
-
-
-    // ------------------------------------------------------
-    // Launch CUDA kernel
-    // ------------------------------------------------------
-
-    bgrToRgbNormalize<<<
-        blocks,
-        threadsPerBlock
-    >>>(
-        deviceInput,
-        deviceOutput,
-        pixelCount
-    );
-
-
-    CUDA_CHECK(
-        cudaGetLastError()
-    );
-
-
-    CUDA_CHECK(
-        cudaEventRecord(stopEvent)
-    );
-
-    CUDA_CHECK(
-        cudaEventSynchronize(stopEvent)
-    );
-
-
-    float gpuMilliseconds = 0.0f;
-
-    CUDA_CHECK(
-        cudaEventElapsedTime(
-            &gpuMilliseconds,
-            startEvent,
-            stopEvent
-        )
-    );
-
-
-    std::cout
-        << "CUDA kernel: "
-        << gpuMilliseconds
-        << " ms\n";
-
-
-    // ------------------------------------------------------
-    // Copy GPU result back
-    // ------------------------------------------------------
-
-    CUDA_CHECK(
-        cudaMemcpy(
-            gpuOutput.data(),
-            deviceOutput,
-            outputBytes,
-            cudaMemcpyDeviceToHost
-        )
-    );
-
-
-    // ------------------------------------------------------
-    // Validate CPU and GPU results
-    // ------------------------------------------------------
-
-    bool correct = true;
-
-    for (int i = 0; i < elementCount; ++i)
-    {
-        float difference =
-            cpuOutput[i] - gpuOutput[i];
-
-        if (difference < 0)
-            difference = -difference;
-
-        if (difference > 0.00001f)
-        {
-            correct = false;
-
-            std::cout
-                << "Mismatch at index "
-                << i
-                << "\n";
-
-            break;
+extern "C" FG_EXPORT int fg_preprocess(void* pointer, const unsigned char* input,
+                                      float* output, int width, int height,
+                                      char* error, size_t error_capacity) {
+    if (!pointer || !input || !output || width <= 0 || height <= 0)
+        return report(cudaErrorInvalidValue, "validate arguments", error, error_capacity);
+    const size_t pixels = static_cast<size_t>(width) * static_cast<size_t>(height);
+    if (pixels > 2147483647 || pixels > std::numeric_limits<size_t>::max() / (3 * sizeof(float)))
+        return report(cudaErrorInvalidValue, "image too large", error, error_capacity);
+    Context* context = static_cast<Context*>(pointer);
+    cudaError_t code = cudaSetDevice(context->device);
+    if (code != cudaSuccess) return report(code, "cudaSetDevice", error, error_capacity);
+    if (pixels > context->capacity) {
+        unsigned char* new_input = nullptr;
+        float* new_output = nullptr;
+        code = cudaMalloc(reinterpret_cast<void**>(&new_input), pixels * 3);
+        if (code != cudaSuccess) return report(code, "cudaMalloc input", error, error_capacity);
+        code = cudaMalloc(reinterpret_cast<void**>(&new_output), pixels * 3 * sizeof(float));
+        if (code != cudaSuccess) {
+            cudaError_t cleanup = cudaFree(new_input);
+            return report(cleanup != cudaSuccess ? cleanup : code, "allocate output/cleanup input", error, error_capacity);
         }
+        code = cudaFree(context->input);
+        context->input = new_input;
+        cudaError_t second = cudaFree(context->output);
+        context->output = new_output;
+        context->capacity = pixels;
+        if (code != cudaSuccess || second != cudaSuccess)
+            return report(code != cudaSuccess ? code : second, "cudaFree old buffers", error, error_capacity);
     }
+    code = cudaMemcpy(context->input, input, pixels * 3, cudaMemcpyHostToDevice);
+    if (code != cudaSuccess) return report(code, "host-to-device", error, error_capacity);
+    code = launchBgrToRgbChw(context->input, context->output, pixels);
+    if (code != cudaSuccess) return report(code, "kernel launch", error, error_capacity);
+    code = cudaMemcpy(output, context->output, pixels * 3 * sizeof(float), cudaMemcpyDeviceToHost);
+    return report(code, "kernel synchronization/device-to-host", error, error_capacity);
+}
 
-
-    if (correct)
-    {
-        std::cout
-            << "\nCPU and GPU outputs match."
-            << "\n";
-    }
-
-
-    // ------------------------------------------------------
-    // Show first pixel
-    // ------------------------------------------------------
-
-    std::cout
-        << "\nFirst BGR pixel:\n";
-
-    std::cout
-        << "B = "
-        << static_cast<int>(hostInput[0])
-        << "\n";
-
-    std::cout
-        << "G = "
-        << static_cast<int>(hostInput[1])
-        << "\n";
-
-    std::cout
-        << "R = "
-        << static_cast<int>(hostInput[2])
-        << "\n";
-
-
-    std::cout
-        << "\nFirst RGB normalized pixel:\n";
-
-    std::cout
-        << "R = "
-        << gpuOutput[0]
-        << "\n";
-
-    std::cout
-        << "G = "
-        << gpuOutput[1]
-        << "\n";
-
-    std::cout
-        << "B = "
-        << gpuOutput[2]
-        << "\n";
-
-
-    // ------------------------------------------------------
-    // Cleanup
-    // ------------------------------------------------------
-
-    CUDA_CHECK(
-        cudaEventDestroy(startEvent)
-    );
-
-    CUDA_CHECK(
-        cudaEventDestroy(stopEvent)
-    );
-
-    CUDA_CHECK(
-        cudaFree(deviceInput)
-    );
-
-    CUDA_CHECK(
-        cudaFree(deviceOutput)
-    );
-
-
-    return 0;
+extern "C" FG_EXPORT int fg_destroy(void* pointer, char* error, size_t error_capacity) {
+    if (!pointer) return report(cudaSuccess, "destroy", error, error_capacity);
+    Context* context = static_cast<Context*>(pointer);
+    cudaError_t code = cudaSetDevice(context->device);
+    if (code != cudaSuccess) return report(code, "cudaSetDevice before destroy", error, error_capacity);
+    cudaError_t first = cudaFree(context->input);
+    cudaError_t second = cudaFree(context->output);
+    delete context;
+    return report(first != cudaSuccess ? first : second, "cudaFree context", error, error_capacity);
 }

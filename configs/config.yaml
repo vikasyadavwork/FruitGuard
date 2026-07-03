@@ -64,6 +64,6 @@ quality:
 storage:
   directory: data/inspections
 classifier:
-  backend: cpu
+  backend: cuda
   device_index: 0
   library_path: build/fruitguard_preprocess.dll
