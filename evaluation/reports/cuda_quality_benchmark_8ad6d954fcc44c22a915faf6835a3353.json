@@ -1,0 +1,1243 @@
+{
+  "application": "FruitGuard Vision",
+  "warmup_per_frame": 10,
+  "iterations_per_frame": 100,
+  "feature_absolute_tolerance": 1e-09,
+  "comparison_failures": 0,
+  "config_snapshot": {
+    "detector": {
+      "model_path": "yolo11n.pt",
+      "device": "cuda:0",
+      "input_size": 640,
+      "detection_threshold": 0.35,
+      "apple_class_name": "apple",
+      "apple_class_id": null
+    },
+    "camera": {
+      "index": 0,
+      "width": 640,
+      "height": 480
+    },
+    "serial": {
+      "port": "COM5",
+      "baudrate": 9600,
+      "startup_delay_s": 2.0,
+      "retry_interval_s": 3.0,
+      "write_timeout_s": 0.1,
+      "max_read_bytes": 4096,
+      "max_line_bytes": 128,
+      "min_distance_cm": 0.1,
+      "max_distance_cm": 400.0,
+      "enter_cm": 40.0,
+      "exit_cm": 45.0,
+      "reading_timeout_s": 1.5
+    },
+    "quality": {
+      "min_roi_size": 32,
+      "min_foreground_pixels": 300,
+      "min_foreground_fraction": 0.2,
+      "max_foreground_fraction": 0.94,
+      "background_corner_fraction": 0.12,
+      "background_max_variation": 18.0,
+      "background_variation_percentile": 85.0,
+      "frame_border_margin_pixels": 2,
+      "foreground_lab_distance": 22.0,
+      "min_component_dominance": 0.85,
+      "min_background_separation": 24.0,
+      "max_boundary_fraction": 0.18,
+      "min_contour_solidity": 0.85,
+      "max_contour_aspect_ratio": 1.9,
+      "dark_value_max": 60,
+      "brown_hue_min": 8,
+      "brown_hue_max": 25,
+      "brown_saturation_min": 35,
+      "brown_saturation_max": 220,
+      "brown_value_min": 60,
+      "brown_value_max": 170,
+      "desaturated_saturation_max": 25,
+      "desaturated_value_min": 60,
+      "desaturated_value_max": 170,
+      "dark_weight": 0.45,
+      "color_weight": 0.3,
+      "symmetry_weight": 0.25,
+      "good_detection_confidence": 0.6,
+      "max_clipped_fraction": 0.08,
+      "good_dark_percentage": 3.0,
+      "strong_dark_percentage": 12.0,
+      "good_color_anomaly": 0.06,
+      "strong_color_anomaly": 0.25,
+      "good_symmetry": 0.85,
+      "strong_symmetry": 0.65,
+      "good_defect_score": 0.1,
+      "strong_defect_score": 0.25
+    },
+    "storage": {
+      "directory": "data/inspections"
+    },
+    "classifier": {
+      "backend": "cuda",
+      "device_index": 0,
+      "library_path": "build/fruitguard_preprocess.dll"
+    }
+  },
+  "samples": [
+    {
+      "source": "synthetic_128_0",
+      "frame_shape": [
+        128,
+        128,
+        3
+      ],
+      "bbox": [
+        15,
+        15,
+        114,
+        114
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 0.8038000000000212,
+        "mean": 0.9842250000000107,
+        "median": 0.9552500000000186,
+        "p95": 1.1341850000000098
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 0.7401999999999687,
+        "mean": 0.9608309999999988,
+        "median": 0.9299499999999572,
+        "p95": 1.1172750000000176
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.027103999629616737,
+          "mean": 0.057795520164072516,
+          "median": 0.04899199865758419,
+          "p95": 0.12351520285010334
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.007071999832987785,
+          "mean": 0.025872960085980595,
+          "median": 0.023552000522613525,
+          "p95": 0.04547199867665767
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.01571200042963028,
+          "mean": 0.03298240005970001,
+          "median": 0.03271999955177307,
+          "p95": 0.05244960077106953
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.2675000000000871,
+          "mean": 0.37773199999999507,
+          "median": 0.3553499999999765,
+          "p95": 0.49739499999997827
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.3963000000000161,
+          "mean": 0.5166420000000084,
+          "median": 0.5143500000000523,
+          "p95": 0.5535799999999869
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "GOOD",
+        "cuda_status": "GOOD"
+      }
+    },
+    {
+      "source": "synthetic_plain_background_128",
+      "frame_shape": [
+        128,
+        128,
+        3
+      ],
+      "bbox": [
+        15,
+        15,
+        114,
+        114
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 1.3209000000000692,
+        "mean": 1.4314380000000029,
+        "median": 1.3920000000000599,
+        "p95": 1.6314600000001178
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 1.2924000000000824,
+        "mean": 1.4330789999999993,
+        "median": 1.3876499999999625,
+        "p95": 1.600680000000165
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.026655999943614006,
+          "mean": 0.05500543985515833,
+          "median": 0.050703998655080795,
+          "p95": 0.09839040301740169
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.0071680000983178616,
+          "mean": 0.019339840016327797,
+          "median": 0.01740800030529499,
+          "p95": 0.044472000002861
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.016863999888300896,
+          "mean": 0.03168768022209406,
+          "median": 0.03014400042593479,
+          "p95": 0.048635200411081304
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.23749999999989058,
+          "mean": 0.30685100000001236,
+          "median": 0.2834000000000447,
+          "p95": 0.4321600000000702
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.9255999999999709,
+          "mean": 1.0848230000000145,
+          "median": 1.0603999999999614,
+          "p95": 1.1989050000000834
+        }
+      },
+      "foreground_source": "plain_background_estimate",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "GOOD",
+        "cuda_status": "GOOD"
+      }
+    },
+    {
+      "source": "synthetic_128_2",
+      "frame_shape": [
+        128,
+        128,
+        3
+      ],
+      "bbox": [
+        15,
+        15,
+        114,
+        114
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 0.8804000000000034,
+        "mean": 0.9706390000000062,
+        "median": 0.9545499999999985,
+        "p95": 1.0691700000000193
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 0.8827999999998504,
+        "mean": 0.9633250000000017,
+        "median": 0.9363500000000302,
+        "p95": 1.0779449999998914
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.026815999299287796,
+          "mean": 0.05682528000324964,
+          "median": 0.05031999945640564,
+          "p95": 0.09881760254502293
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.0071680000983178616,
+          "mean": 0.022618239899165928,
+          "median": 0.020479999482631683,
+          "p95": 0.041062398999929424
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.012959999963641167,
+          "mean": 0.032723519997671244,
+          "median": 0.029280000366270542,
+          "p95": 0.06904319673776627
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.30609999999997584,
+          "mean": 0.37501500000000304,
+          "median": 0.3558999999999646,
+          "p95": 0.46426000000007184
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.4943000000001696,
+          "mean": 0.5218560000000094,
+          "median": 0.5188000000000415,
+          "p95": 0.5520550000000957
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 5.737556561085973,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.02581900452488688
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 5.737556561085973,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.02581900452488688
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "REVIEW",
+        "cuda_status": "REVIEW"
+      }
+    },
+    {
+      "source": "synthetic_128_3",
+      "frame_shape": [
+        128,
+        128,
+        3
+      ],
+      "bbox": [
+        15,
+        15,
+        114,
+        114
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 0.8752000000000759,
+        "mean": 0.9797489999999942,
+        "median": 0.966699999999987,
+        "p95": 1.066904999999907
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 0.8919000000000565,
+        "mean": 0.9778190000000042,
+        "median": 0.9576000000000029,
+        "p95": 1.086699999999985
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.02675200067460537,
+          "mean": 0.06771231964230537,
+          "median": 0.05628800019621849,
+          "p95": 0.12906879633665083
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.0071680000983178616,
+          "mean": 0.03082432007882744,
+          "median": 0.024688000790774822,
+          "p95": 0.05385280009359121
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.013439999893307686,
+          "mean": 0.0379551999270916,
+          "median": 0.034143999218940735,
+          "p95": 0.06385120190680027
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.3125999999999962,
+          "mean": 0.39888799999999724,
+          "median": 0.37645000000008366,
+          "p95": 0.5117549999998472
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.4777000000000253,
+          "mean": 0.5129940000000044,
+          "median": 0.5084999999999118,
+          "p95": 0.5668199999999124
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 18.262443438914026,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.08218099547511311
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 18.262443438914026,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.08218099547511311
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "DEFECTIVE",
+        "cuda_status": "DEFECTIVE"
+      }
+    },
+    {
+      "source": "synthetic_256_4",
+      "frame_shape": [
+        256,
+        256,
+        3
+      ],
+      "bbox": [
+        36,
+        36,
+        221,
+        221
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 1.6205000000000247,
+        "mean": 1.7828569999999935,
+        "median": 1.7337000000000602,
+        "p95": 1.9966049999998847
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 1.3108000000001674,
+        "mean": 1.4851069999999964,
+        "median": 1.4540499999997625,
+        "p95": 1.7047149999998343
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.056063998490571976,
+          "mean": 0.08805503975600004,
+          "median": 0.08388800173997879,
+          "p95": 0.13218399956822394
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.013311999849975109,
+          "mean": 0.025927680069580673,
+          "median": 0.027648000046610832,
+          "p95": 0.04920320156961679
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.01945599913597107,
+          "mean": 0.03790144009515643,
+          "median": 0.03513599932193756,
+          "p95": 0.05457280073314904
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.3096999999998573,
+          "mean": 0.4247749999999905,
+          "median": 0.4114000000000617,
+          "p95": 0.5588850000002088
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.9061000000001318,
+          "mean": 0.9793720000000051,
+          "median": 0.9635500000001462,
+          "p95": 1.074170000000152
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "GOOD",
+        "cuda_status": "GOOD"
+      }
+    },
+    {
+      "source": "synthetic_plain_background_256",
+      "frame_shape": [
+        256,
+        256,
+        3
+      ],
+      "bbox": [
+        36,
+        36,
+        221,
+        221
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 2.925100000000125,
+        "mean": 3.0871370000000065,
+        "median": 3.0525500000000427,
+        "p95": 3.296074999999954
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 2.6465999999998324,
+        "mean": 2.853899000000033,
+        "median": 2.81980000000015,
+        "p95": 3.129664999999826
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.07148800045251846,
+          "mean": 0.1078377604484558,
+          "median": 0.10148800164461136,
+          "p95": 0.15857600048184395
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.013311999849975109,
+          "mean": 0.025017280224710704,
+          "median": 0.014336000196635723,
+          "p95": 0.08372960053384301
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.021888000890612602,
+          "mean": 0.049172480013221505,
+          "median": 0.041200000792741776,
+          "p95": 0.10233919695019722
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.3291000000000821,
+          "mean": 0.4172890000000295,
+          "median": 0.39610000000012136,
+          "p95": 0.5411150000001583
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 2.15799999999966,
+          "mean": 2.2609889999999977,
+          "median": 2.2316499999999184,
+          "p95": 2.4225150000001916
+        }
+      },
+      "foreground_source": "plain_background_estimate",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "GOOD",
+        "cuda_status": "GOOD"
+      }
+    },
+    {
+      "source": "synthetic_256_6",
+      "frame_shape": [
+        256,
+        256,
+        3
+      ],
+      "bbox": [
+        36,
+        36,
+        221,
+        221
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 1.592599999999944,
+        "mean": 1.6892519999999767,
+        "median": 1.6657499999996883,
+        "p95": 1.783595000000071
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 1.3184000000001639,
+        "mean": 1.3801110000000036,
+        "median": 1.350149999999939,
+        "p95": 1.5274850000003504
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.05696000158786774,
+          "mean": 0.08718047950416803,
+          "median": 0.08806400001049042,
+          "p95": 0.10233759693801403
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.014336000196635723,
+          "mean": 0.01607680012471974,
+          "median": 0.014336000196635723,
+          "p95": 0.02870720038190484
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.01740800030529499,
+          "mean": 0.03266591992229223,
+          "median": 0.031007999554276466,
+          "p95": 0.04723520055413245
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.3028000000000475,
+          "mean": 0.3460890000000338,
+          "median": 0.3249499999999905,
+          "p95": 0.4505300000001488
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.9125000000000938,
+          "mean": 0.9659979999999768,
+          "median": 0.9600499999999901,
+          "p95": 1.018869999999672
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 6.048191709616316,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.027216862693273423
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 6.048191709616316,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.027216862693273423
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "REVIEW",
+        "cuda_status": "REVIEW"
+      }
+    },
+    {
+      "source": "synthetic_256_7",
+      "frame_shape": [
+        256,
+        256,
+        3
+      ],
+      "bbox": [
+        36,
+        36,
+        221,
+        221
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 1.6034000000000326,
+        "mean": 1.6952940000000007,
+        "median": 1.6651500000002262,
+        "p95": 1.8089900000000323
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 1.2769999999999726,
+        "mean": 1.4029410000000153,
+        "median": 1.3607500000001327,
+        "p95": 1.6295699999998803
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.05820799991488457,
+          "mean": 0.09039455965161323,
+          "median": 0.08539200201630592,
+          "p95": 0.1277391955256462
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.014336000196635723,
+          "mean": 0.016876800134778023,
+          "median": 0.014336000196635723,
+          "p95": 0.031980799511075006
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.020800000056624413,
+          "mean": 0.03398592002689838,
+          "median": 0.030943999998271465,
+          "p95": 0.056927999667823304
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.29800000000035354,
+          "mean": 0.3787710000000067,
+          "median": 0.3602499999999509,
+          "p95": 0.5724100000001452
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 0.8870999999999185,
+          "mean": 0.9527360000000183,
+          "median": 0.9416999999998232,
+          "p95": 1.0165899999996064
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 17.853839037927845,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0803422756706753
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 17.853839037927845,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0803422756706753
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "DEFECTIVE",
+        "cuda_status": "DEFECTIVE"
+      }
+    },
+    {
+      "source": "synthetic_512_8",
+      "frame_shape": [
+        512,
+        512,
+        3
+      ],
+      "bbox": [
+        79,
+        79,
+        434,
+        434
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 4.300600000000543,
+        "mean": 4.640085000000016,
+        "median": 4.499050000000615,
+        "p95": 5.234825000000254
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 2.7529999999997834,
+        "mean": 3.000405000000002,
+        "median": 2.926200000000101,
+        "p95": 3.3200200000001345
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.049855999648571014,
+          "mean": 0.11216640003025531,
+          "median": 0.10763199999928474,
+          "p95": 0.16136799603700636
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.061983998864889145,
+          "mean": 0.07903071995824576,
+          "median": 0.07769599929451942,
+          "p95": 0.10085440017282962
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.0326399989426136,
+          "mean": 0.07884800009429455,
+          "median": 0.08342400193214417,
+          "p95": 0.10510080270469188
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.5573000000000938,
+          "mean": 0.6875019999999799,
+          "median": 0.6439499999997267,
+          "p95": 0.857584999999572
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 2.0275999999999073,
+          "mean": 2.1688240000000154,
+          "median": 2.125149999999909,
+          "p95": 2.3663800000002233
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "GOOD",
+        "cuda_status": "GOOD"
+      }
+    },
+    {
+      "source": "synthetic_plain_background_512",
+      "frame_shape": [
+        512,
+        512,
+        3
+      ],
+      "bbox": [
+        79,
+        79,
+        434,
+        434
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 7.7609000000000705,
+        "mean": 9.416026000000056,
+        "median": 9.014299999999587,
+        "p95": 12.645024999999821
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 6.419400000000408,
+        "mean": 7.7249469999999665,
+        "median": 7.449300000000214,
+        "p95": 9.843309999999805
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.04614400118589401,
+          "mean": 0.10449152000248432,
+          "median": 0.08953600004315376,
+          "p95": 0.22528640553355214
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.063680000603199,
+          "mean": 0.10494240045547486,
+          "median": 0.10252799838781357,
+          "p95": 0.1491472028195858
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.0342399999499321,
+          "mean": 0.07558176010847091,
+          "median": 0.07390400022268295,
+          "p95": 0.1399616003036499
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.580000000000247,
+          "mean": 0.8306520000000361,
+          "median": 0.7633499999997184,
+          "p95": 1.1591549999995898
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 5.560599999999916,
+          "mean": 6.679118000000052,
+          "median": 6.44184999999986,
+          "p95": 8.460515000000557
+        }
+      },
+      "foreground_source": "plain_background_estimate",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 0.0,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.0
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "GOOD",
+        "cuda_status": "GOOD"
+      }
+    },
+    {
+      "source": "synthetic_512_10",
+      "frame_shape": [
+        512,
+        512,
+        3
+      ],
+      "bbox": [
+        79,
+        79,
+        434,
+        434
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 4.310399999999603,
+        "mean": 4.6640719999999645,
+        "median": 4.644599999999777,
+        "p95": 5.163490000000692
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 2.7599000000000373,
+        "mean": 3.1783359999999745,
+        "median": 3.0988000000005123,
+        "p95": 3.932700000000011
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.05580800026655197,
+          "mean": 0.12776416026055812,
+          "median": 0.11980799958109856,
+          "p95": 0.2009711943566799
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.061983998864889145,
+          "mean": 0.08248063944280147,
+          "median": 0.07575999945402145,
+          "p95": 0.11823520101606842
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.03356799855828285,
+          "mean": 0.07975519996136426,
+          "median": 0.08099199831485748,
+          "p95": 0.10440799668431282
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.5636999999998338,
+          "mean": 0.7700880000000424,
+          "median": 0.708000000000375,
+          "p95": 1.185160000000307
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 2.030200000000093,
+          "mean": 2.261419000000018,
+          "median": 2.1729999999999805,
+          "p95": 2.6482099999997732
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 6.085807126727984,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.027386132070275928
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 6.085807126727984,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.027386132070275928
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "REVIEW",
+        "cuda_status": "REVIEW"
+      }
+    },
+    {
+      "source": "synthetic_512_11",
+      "frame_shape": [
+        512,
+        512,
+        3
+      ],
+      "bbox": [
+        79,
+        79,
+        434,
+        434
+      ],
+      "cpu_quality_wall_ms": {
+        "count": 100,
+        "min": 4.277799999999665,
+        "mean": 4.724041999999962,
+        "median": 4.649950000000125,
+        "p95": 5.1996149999994135
+      },
+      "cuda_quality_wall_ms": {
+        "count": 100,
+        "min": 2.7436999999999045,
+        "mean": 3.210131999999924,
+        "median": 3.101400000000254,
+        "p95": 3.903650000000214
+      },
+      "cuda_measurement_diagnostics": {
+        "h2d_ms": {
+          "count": 100,
+          "min": 0.056095998734235764,
+          "mean": 0.12077120017260314,
+          "median": 0.11600000038743019,
+          "p95": 0.19019520655274388
+        },
+        "kernel_ms": {
+          "count": 100,
+          "min": 0.06281600147485733,
+          "mean": 0.10293440021574497,
+          "median": 0.10107200220227242,
+          "p95": 0.14379679784178734
+        },
+        "d2h_ms": {
+          "count": 100,
+          "min": 0.03843199834227562,
+          "mean": 0.08594399951398372,
+          "median": 0.0886240005493164,
+          "p95": 0.11164799965918064
+        },
+        "allocation_ms": {
+          "count": 100,
+          "min": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "wall_ms": {
+          "count": 100,
+          "min": 0.5611999999999284,
+          "mean": 0.7698449999999645,
+          "median": 0.7158999999998805,
+          "p95": 1.16608500000015
+        },
+        "mask_cpu_ms": {
+          "count": 100,
+          "min": 2.04969999999971,
+          "mean": 2.291246000000031,
+          "median": 2.2164999999998436,
+          "p95": 2.6488749999999506
+        }
+      },
+      "foreground_source": "external_supplied_mask",
+      "last_comparison": {
+        "cpu_features": {
+          "dark_spot_percentage": 18.42705292724569,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.08292173817260562
+        },
+        "cuda_features": {
+          "dark_spot_percentage": 18.42705292724569,
+          "color_anomaly_score": 0.0,
+          "symmetry_score": 1.0,
+          "visual_defect_score": 0.08292173817260562
+        },
+        "absolute_errors": {
+          "color_anomaly_score": 0.0,
+          "dark_spot_percentage": 0.0,
+          "symmetry_score": 0.0,
+          "visual_defect_score": 0.0
+        },
+        "cpu_status": "DEFECTIVE",
+        "cuda_status": "DEFECTIVE"
+      }
+    }
+  ],
+  "timing_boundaries": {
+    "cpu_quality_wall_ms": "CPU ROI validation, foreground estimation/contour, features and decision",
+    "cuda_quality_wall_ms": "Same ROI/CPU foreground work plus CUDA transfer, allocation, measurement and decision; bridge synchronizes",
+    "cuda_measurement_diagnostics": "Bridge-reported timing boundaries/units; absent metrics are unavailable, not zero",
+    "h2d_ms": "CUDA events around host-to-device ROI BGR and foreground mask copies",
+    "kernel_ms": "CUDA events around BGR-to-HSV, dark/color tests, mirrored-mask comparison and GPU block reduction",
+    "d2h_ms": "CUDA events around GPU partial-count copy to host",
+    "allocation_ms": "Host wall time for CUDA buffer allocation/growth; zero if buffers reused",
+    "wall_ms": "Bridge wall time including host contiguous copies, allocation, transfers, kernels, synchronization and final host reduction; excludes context initialization",
+    "mask_cpu_ms": "CPU wall time around foreground estimate/contour/reliability validation; excludes ROI clipping",
+    "excluded": "File decode, YOLO, camera, serial, OpenCV display, sample saving"
+  },
+  "claim": "Only measured quality-path timings. No real-apple accuracy or unmeasured acceleration claim.",
+  "cuda_diagnostic_schema": null,
+  "cuda_library": "D:\\AurdinoCudaProject\\build\\fruitguard_preprocess.dll",
+  "cuda_library_sha256": "0b0857306b79af9bd41d7f1aa36284e23e1f3b497978a7140cc03e860614f174",
+  "cuda_device": 0,
+  "input_kind": "synthetic_numerical_and_timing_only"
+}

@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "device": "NVIDIA GeForce GTX 1050 Ti",
+  "compute_capability": "6.1",
+  "cuda_runtime_version": 12040,
+  "cuda_driver_version": 12080,
+  "build_target": "sm_61",
+  "warmup_runs": 10,
+  "measured_runs": 100,
+  "absolute_tolerance": 1E-06,
+  "host_memory": "pageable std::vector",
+  "layout": "uint8 BGR HWC to float32 RGB CHW divided by 255",
+  "context_initialization_ms": 82.4595,
+  "timing_boundaries": {
+    "cpu_ms": "steady_clock host reference, existing output allocation",
+    "h2d_ms": "steady_clock synchronous pageable cudaMemcpy including host staging",
+    "kernel_ms": "CUDA events around kernel, stop synchronized",
+    "d2h_ms": "steady_clock synchronous cudaMemcpy after kernel already synchronized",
+    "complete_ms": "separate uninstrumented H2D + launch + synchronous D2H, reused buffers; excludes allocation and context setup",
+    "allocation_setup_ms": "device buffers and timing event creation only"
+  },
+  "cases": [
+    {
+      "width": 1,
+      "height": 1,
+      "pixels": 1,
+      "allocation_setup_ms": 0.1785,
+      "cpu_ms": 4.2E-05,
+      "h2d_ms": 0.007133,
+      "kernel_ms": 0.01637760007,
+      "d2h_ms": 0.012605,
+      "complete_ms": 0.040912,
+      "maximum_absolute_error": 0,
+      "comparison_passed": true
+    },
+    {
+      "width": 17,
+      "height": 19,
+      "pixels": 323,
+      "allocation_setup_ms": 0.1871,
+      "cpu_ms": 0.000775,
+      "h2d_ms": 0.006947,
+      "kernel_ms": 0.01732352015,
+      "d2h_ms": 0.012536,
+      "complete_ms": 0.043717,
+      "maximum_absolute_error": 0,
+      "comparison_passed": true
+    },
+    {
+      "width": 640,
+      "height": 640,
+      "pixels": 409600,
+      "allocation_setup_ms": 0.424,
+      "cpu_ms": 0.996816,
+      "h2d_ms": 0.174315,
+      "kernel_ms": 0.1032223997,
+      "d2h_ms": 1.260345,
+      "complete_ms": 1.566956,
+      "maximum_absolute_error": 0,
+      "comparison_passed": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "pixels": 2073600,
+      "allocation_setup_ms": 0.6116,
+      "cpu_ms": 5.508926,
+      "h2d_ms": 1.443732,
+      "kernel_ms": 0.3958896005,
+      "d2h_ms": 6.287838,
+      "complete_ms": 8.048252,
+      "maximum_absolute_error": 0,
+      "comparison_passed": true
+    }
+  ],
+  "measured_at_utc": "2026-09-27T16:24:39.4146129Z"
+}
